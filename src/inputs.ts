@@ -55,8 +55,16 @@ export function getInputs(): ActionInputs {
 
   const cdktnVersion = core.getInput('cdktnVersion')
   const cdktfVersion = core.getInput('cdktfVersion')
-  if (!cdktnVersion && !cdktfVersion) {
-    throw new Error('Provide a "cdktnVersion" (or the deprecated "cdktfVersion") input.')
+  const useLocalCli = core.getBooleanInput('useLocalCli')
+  if (!cdktnVersion && !cdktfVersion && !useLocalCli) {
+    throw new Error(
+      'Provide a "cdktnVersion" (or the deprecated "cdktfVersion") input, or set "useLocalCli".',
+    )
+  }
+  if (useLocalCli && (cdktnVersion || cdktfVersion)) {
+    core.warning(
+      'useLocalCli is set: the project-local cdktn runs and the version input is ignored.',
+    )
   }
   if (cdktnVersion && cdktfVersion) {
     core.warning('Both "cdktnVersion" and "cdktfVersion" were set; using "cdktnVersion".')
@@ -67,6 +75,7 @@ export function getInputs(): ActionInputs {
   return {
     cdktnVersion,
     cdktfVersion,
+    useLocalCli,
     engine: parseEngine(core.getInput('engine') || ENGINE_AUTO),
     engineVersion: withDeprecated('engineVersion', 'terraformVersion'),
     workingDirectory: core.getInput('workingDirectory') || './',

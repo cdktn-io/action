@@ -80,6 +80,7 @@ jobs:
 | ------------------ | -------- | ------- | ----------- |
 | `mode`             | yes      | —       | `synth-only`, `plan-only`, `auto-approve-apply`, or `auto-approve-destroy`. |
 | `cdktnVersion`     | yes¹     | —       | Version of `cdktn-cli` to run (fetched via `npx`). |
+| `useLocalCli`      | no       | `false` | Run the CLI from the project's `node_modules` (`npx --no cdktn`) instead of fetching it, so its version follows the project's lockfile. Install dependencies first. |
 | `stackName`        | for non-synth modes | — | Stack to operate on. Required for every mode except `synth-only`. |
 | `engine`           | no       | `auto`  | Engine to drive: `auto` (detect, prefer OpenTofu), `tofu`, or `terraform`. Sets `TERRAFORM_BINARY_NAME`. |
 | `engineVersion`    | no       | —       | Exact engine version that must be on `PATH`. Empty = only check presence. |
@@ -92,7 +93,7 @@ jobs:
 | `cdktnArgs`        | no       | `""`    | Extra args passed to the `cdktn` command. |
 | `suppressOutput`   | no       | `false` | Omit captured CLI output from the PR comment. |
 
-¹ Provide either `cdktnVersion` or the deprecated `cdktfVersion`; the action errors if both are missing.
+¹ Provide either `cdktnVersion` or the deprecated `cdktfVersion`, or set `useLocalCli`; the action errors otherwise. With `useLocalCli`, the project-local `cdktn` runs and any version input is ignored.
 
 ### Deprecated inputs (accepted for migration)
 

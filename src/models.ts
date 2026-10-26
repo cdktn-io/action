@@ -46,6 +46,8 @@ export interface ActionInputs {
   cdktnVersion: string
   /** Deprecated: version of the legacy `cdktf-cli` to run instead. */
   cdktfVersion: string
+  /** Run the CLI installed in the project's node_modules instead of fetching it. */
+  useLocalCli: boolean
   /** Engine preference: `tofu`, `terraform`, or `auto` (detect from PATH). */
   engine: EnginePreference
   /** Optional exact engine version to require on PATH (empty = only check presence). */

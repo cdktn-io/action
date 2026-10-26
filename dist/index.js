@@ -21010,12 +21010,15 @@ function getInputs() {
 	if (modeRequiresStack(mode) && !stackName) throw new Error(`The "stackName" input is required when mode is "${mode}".`);
 	const cdktnVersion = getInput("cdktnVersion");
 	const cdktfVersion = getInput("cdktfVersion");
-	if (!cdktnVersion && !cdktfVersion) throw new Error("Provide a \"cdktnVersion\" (or the deprecated \"cdktfVersion\") input.");
+	const useLocalCli = getBooleanInput("useLocalCli");
+	if (!cdktnVersion && !cdktfVersion && !useLocalCli) throw new Error("Provide a \"cdktnVersion\" (or the deprecated \"cdktfVersion\") input, or set \"useLocalCli\".");
+	if (useLocalCli && (cdktnVersion || cdktfVersion)) warning("useLocalCli is set: the project-local cdktn runs and the version input is ignored.");
 	if (cdktnVersion && cdktfVersion) warning("Both \"cdktnVersion\" and \"cdktfVersion\" were set; using \"cdktnVersion\".");
 	else if (cdktfVersion) warning("Input \"cdktfVersion\" is deprecated; migrate to \"cdktnVersion\".");
 	return {
 		cdktnVersion,
 		cdktfVersion,
+		useLocalCli,
 		engine: parseEngine(getInput("engine") || "auto"),
 		engineVersion: withDeprecated("engineVersion", "terraformVersion"),
 		workingDirectory: getInput("workingDirectory") || "./",
@@ -21073,10 +21076,13 @@ function engineCommand(inputs, outputsFile) {
 }
 /** Assemble the full `npx` argv that runs the selected CDK CLI. */
 function buildNpxArgs(inputs, outputsFile) {
-	const cli = resolveCli(inputs);
-	const args = ["--yes"];
+	const args = [inputs.useLocalCli ? "--no" : "--yes"];
 	args.push(...splitArgs(inputs.customNpxArgs));
-	args.push(`${cli.pkg}@${cli.version}`);
+	if (inputs.useLocalCli) args.push("cdktn");
+	else {
+		const cli = resolveCli(inputs);
+		args.push(`${cli.pkg}@${cli.version}`);
+	}
 	args.push(...engineCommand(inputs, outputsFile));
 	args.push(...splitArgs(inputs.cdktnArgs));
 	return args;

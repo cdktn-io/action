@@ -8,11 +8,18 @@ branding:
 
 inputs:
   cdktnVersion:
-    description: Version of cdktn-cli to run (fetched on demand via npx). Required unless cdktfVersion is set.
+    description: Version of cdktn-cli to run (fetched on demand via npx). Required unless cdktfVersion or useLocalCli is set.
     required: false
   cdktfVersion:
     description: "Deprecated: version of the legacy cdktf-cli to run instead of cdktn-cli. Prefer cdktnVersion."
     required: false
+  useLocalCli:
+    description: >-
+      Run the CLI installed in the project's node_modules (`npx --no cdktn`)
+      instead of fetching a version via npx, so the version comes from the
+      project's lockfile. Install dependencies before this step.
+    required: false
+    default: "false"
   engine:
     description: >-
       Provisioning engine to drive: `auto` (default — detect from PATH, preferring

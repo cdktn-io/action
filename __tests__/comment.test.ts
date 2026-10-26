@@ -15,6 +15,7 @@ function inputs(overrides: Partial<ActionInputs> = {}): ActionInputs {
   return {
     cdktnVersion: '0.23.3',
     cdktfVersion: '',
+    useLocalCli: false,
     engine: Engine.OpenTofu,
     engineVersion: '',
     workingDirectory: './',

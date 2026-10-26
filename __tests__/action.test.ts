@@ -17,6 +17,7 @@ function inputs(overrides: Partial<ActionInputs> = {}): ActionInputs {
   return {
     cdktnVersion: '0.23.3',
     cdktfVersion: '',
+    useLocalCli: false,
     engine: Engine.OpenTofu,
     engineVersion: '',
     workingDirectory: './',
@@ -116,6 +117,28 @@ describe('buildNpxArgs', () => {
       '/tmp/outputs.json',
     )
     expect(args).toEqual(['--yes', 'cdktn-cli@0.23.3', 'plan', 'dev'])
+  })
+
+  it('runs the project-local cdktn without fetching it', () => {
+    const args = buildNpxArgs(
+      inputs({
+        cdktnVersion: '',
+        useLocalCli: true,
+        mode: ExecutionMode.PlanOnly,
+        stackName: 'dev',
+      }),
+    )
+    expect(args).toEqual(['--no', 'cdktn', 'plan', 'dev'])
+  })
+
+  it('ignores version inputs when running the local CLI', () => {
+    const args = buildNpxArgs(inputs({ cdktfVersion: '0.21.0', useLocalCli: true }))
+    expect(args).toEqual(['--no', 'cdktn', 'synth'])
+  })
+
+  it('threads custom npx args before the local CLI', () => {
+    const args = buildNpxArgs(inputs({ useLocalCli: true, customNpxArgs: '--quiet' }))
+    expect(args).toEqual(['--no', '--quiet', 'cdktn', 'synth'])
   })
 })
 
