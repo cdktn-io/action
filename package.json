@@ -54,10 +54,10 @@
     "@biomejs/biome": "^2.5.3",
     "@github/local-action": "^7.0.1",
     "@types/node": "^26.1.1",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/coverage-v8": "^5.0.5",
     "rimraf": "^6.0.1",
-    "rolldown": "^1.0.0",
+    "rolldown": "^1.2.14",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.9"
+    "vitest": "^5.0.5"
   }
 }
